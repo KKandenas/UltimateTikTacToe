@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<title>Ultimate Tic-Tac-Toe</title>
+<meta name="theme-color" content="#0b0d13" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+<div id="app">
+
+  <!-- LOBBY -->
+  <section id="lobby-screen" class="screen">
+    <div class="lobby-card">
+      <h1 class="app-title">Ultimate<br /><span>Tic-Tac-Toe</span></h1>
+      <p class="app-subtitle">Spela mot en vän i realtid</p>
+
+      <div class="lobby-tabs">
+        <button class="tab-btn active" data-tab="create">Skapa rum</button>
+        <button class="tab-btn" data-tab="join">Gå med</button>
+      </div>
+
+      <div class="tab-panel" id="tab-create">
+        <p class="tab-desc">Skapa ett nytt rum och dela koden med din motståndare. Du blir X.</p>
+        <button id="create-room-btn" class="primary-btn">Skapa rum</button>
+      </div>
+
+      <div class="tab-panel hidden" id="tab-join">
+        <p class="tab-desc">Ange den 4-siffriga rumskoden. Du blir O.</p>
+        <input
+          id="join-code-input"
+          class="code-input"
+          type="text"
+          inputmode="numeric"
+          pattern="[0-9]*"
+          maxlength="4"
+          placeholder="0000"
+          autocomplete="off"
+        />
+        <button id="join-room-btn" class="primary-btn">Gå med i rum</button>
+      </div>
+
+      <p id="lobby-error" class="error-text hidden"></p>
+    </div>
+  </section>
+
+  <!-- SPEL -->
+  <section id="game-screen" class="screen hidden">
+    <header class="status-bar">
+      <div class="status-left">
+        <span class="role-badge" id="role-badge">X</span>
+        <span class="room-code-tag" id="room-code-tag">Rum: ----</span>
+      </div>
+      <div class="status-center" id="status-text">Väntar på motståndare...</div>
+      <button class="leave-btn" id="leave-btn" title="Lämna rum" aria-label="Lämna rum">✕</button>
+    </header>
+
+    <div class="board-wrap">
+      <div class="game-board" id="game-board"></div>
+    </div>
+
+    <div class="share-panel hidden" id="share-panel">
+      <p>Dela koden med din motståndare:</p>
+      <div class="share-row">
+        <span class="share-code" id="share-code">0000</span>
+        <button id="copy-link-btn" class="secondary-btn">Kopiera länk</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SPEL SLUT -->
+  <div id="gameover-modal" class="modal hidden">
+    <div class="modal-card">
+      <h2 id="gameover-title">Oavgjort!</h2>
+      <p id="gameover-desc"></p>
+      <button id="gameover-leave-btn" class="primary-btn">Tillbaka till lobbyn</button>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+</div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
