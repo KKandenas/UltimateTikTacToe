@@ -11,14 +11,26 @@
 <div id="app">
 
   <!-- LOBBY -->
-  <section id="lobby-screen" class="screen">
+  <section id="lobby-screen" class="screen lobby-screen">
+    <div class="lobby-hero">
+      <img src="assets/hero-banner.jpg" alt="Ultimate Tic Tac Toe" class="hero-img" />
+    </div>
+
     <div class="lobby-card">
-      <h1 class="app-title">Ultimate<br /><span>Tic-Tac-Toe</span></h1>
       <p class="app-subtitle">Spela mot en vän i realtid</p>
 
-      <div class="lobby-tabs">
-        <button class="tab-btn active" data-tab="create">Skapa rum</button>
-        <button class="tab-btn" data-tab="join">Gå med</button>
+      <div class="mode-grid">
+        <button class="tab-btn mode-cell mode-x active" data-tab="create">
+          <span class="mode-icon">X</span>
+          <span class="mode-label">Skapa rum</span>
+        </button>
+        <div class="mode-cell mode-empty" aria-hidden="true">
+          <span class="mode-vs">vs</span>
+        </div>
+        <button class="tab-btn mode-cell mode-o" data-tab="join">
+          <span class="mode-icon">O</span>
+          <span class="mode-label">Gå med</span>
+        </button>
       </div>
 
       <div class="tab-panel" id="tab-create">
