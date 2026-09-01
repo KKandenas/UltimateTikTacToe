@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <title>Ultimate Tic-Tac-Toe</title>
 <meta name="theme-color" content="#0b0d13" />
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+<link rel="manifest" href="manifest.webmanifest" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Ultimate TTT" />
 <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
@@ -54,6 +60,8 @@
       </div>
 
       <p id="lobby-error" class="error-text hidden"></p>
+
+      <button id="rules-link-lobby" class="rules-link" type="button">Hur spelar man? Se spelreglerna</button>
     </div>
   </section>
 
@@ -65,7 +73,8 @@
         <span class="room-code-tag" id="room-code-tag">Rum: ----</span>
       </div>
       <div class="status-center" id="status-text">Väntar på motståndare...</div>
-      <button class="leave-btn" id="leave-btn" title="Lämna rum" aria-label="Lämna rum">✕</button>
+      <button class="icon-btn" id="rules-link-game" title="Spelregler" aria-label="Spelregler">?</button>
+      <button class="icon-btn leave-btn" id="leave-btn" title="Lämna rum" aria-label="Lämna rum">✕</button>
     </header>
 
     <div class="board-wrap">
@@ -86,7 +95,50 @@
     <div class="modal-card">
       <h2 id="gameover-title">Oavgjort!</h2>
       <p id="gameover-desc"></p>
-      <button id="gameover-leave-btn" class="primary-btn">Tillbaka till lobbyn</button>
+      <button id="gameover-restart-btn" class="primary-btn">Spela igen</button>
+      <button id="gameover-leave-btn" class="secondary-btn modal-secondary">Tillbaka till lobbyn</button>
+    </div>
+  </div>
+
+  <!-- SPELREGLER -->
+  <div id="rules-modal" class="modal hidden">
+    <div class="modal-card rules-card">
+      <h2>Spelregler</h2>
+      <div class="rules-content">
+        <p>
+          Ultimate Tic-Tac-Toe spelas på ett stort 3×3-rutnät där varje ruta
+          i sig är ett eget litet tre-i-rad-bräde – totalt 9 småbräden med
+          9 rutor vardera.
+        </p>
+        <ol>
+          <li>X gör första draget i valfritt litet bräde och valfri ruta.</li>
+          <li>
+            Vilken ruta du väljer <strong>inom</strong> det lilla brädet
+            avgör vilket av de 9 stora brädena motståndaren måste spela i
+            härnäst. Spelar du t.ex. i övre högra rutan skickas
+            motståndaren till det övre högra brädet.
+          </li>
+          <li>
+            Är det brädet redan vunnet eller fullt får spelaren istället
+            välja fritt bland alla öppna bräden – ett "frikort".
+          </li>
+          <li>
+            Får du tre egna symboler i rad (vågrätt, lodrätt eller
+            diagonalt) i ett litet bräde vinner du det brädet, och det
+            markeras med din stora symbol.
+          </li>
+          <li>
+            Blir ett litet bräde fullt utan vinnare räknas det som
+            oavgjort och räknas inte till någon spelare.
+          </li>
+          <li>
+            Först med tre vunna bräden i rad i det stora rutnätet vinner
+            hela spelet. Är alla bräden avgjorda utan att någon fått tre i
+            rad blir hela matchen oavgjort.
+          </li>
+        </ol>
+      </div>
+      <button id="rules-close-btn" class="primary-btn">Stäng</button>
     </div>
   </div>
 

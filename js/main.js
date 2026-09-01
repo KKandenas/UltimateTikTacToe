@@ -13,7 +13,7 @@ import {
   getSavedSession,
   clearSavedSession,
 } from "./lobby.js";
-import { enterGame, leaveGame, buildBoardDom } from "./game.js";
+import { enterGame, leaveGame, restartGame, buildBoardDom } from "./game.js";
 
 const el = {
   lobbyScreen: document.getElementById("lobby-screen"),
@@ -38,7 +38,13 @@ const el = {
   gameoverModal: document.getElementById("gameover-modal"),
   gameoverTitle: document.getElementById("gameover-title"),
   gameoverDesc: document.getElementById("gameover-desc"),
+  gameoverRestartBtn: document.getElementById("gameover-restart-btn"),
   gameoverLeaveBtn: document.getElementById("gameover-leave-btn"),
+
+  rulesModal: document.getElementById("rules-modal"),
+  rulesLinkLobby: document.getElementById("rules-link-lobby"),
+  rulesLinkGame: document.getElementById("rules-link-game"),
+  rulesCloseBtn: document.getElementById("rules-close-btn"),
 
   toast: document.getElementById("toast"),
 };
@@ -128,6 +134,22 @@ function returnToLobby() {
 
 el.leaveBtn.addEventListener("click", returnToLobby);
 el.gameoverLeaveBtn.addEventListener("click", returnToLobby);
+
+el.gameoverRestartBtn.addEventListener("click", () => {
+  restartGame();
+  el.gameoverModal.classList.add("hidden");
+});
+
+// --- Spelregler ---------------------------------------------------------
+function openRules() {
+  el.rulesModal.classList.remove("hidden");
+}
+function closeRules() {
+  el.rulesModal.classList.add("hidden");
+}
+el.rulesLinkLobby.addEventListener("click", openRules);
+el.rulesLinkGame.addEventListener("click", openRules);
+el.rulesCloseBtn.addEventListener("click", closeRules);
 
 // --- Dela länk --------------------------------------------------------
 el.copyLinkBtn.addEventListener("click", async () => {

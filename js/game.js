@@ -9,7 +9,7 @@ import {
   onDisconnect,
   off,
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
-import { isMoveLegal, applyMove } from "./gameEngine.js";
+import { isMoveLegal, applyMove, resetRoomForRematch } from "./gameEngine.js";
 
 let currentRoomCode = null;
 let currentRole = null;
@@ -58,6 +58,22 @@ export function buildBoardDom(container) {
   container.addEventListener("click", handleBoardClick);
 }
 
+// Nollställer brädets DOM-innehåll. Cellernas element återanvänds mellan
+// rum (samma DOM-noder över hela appens livstid), så utan detta kan gamla
+// X/O bli kvar visuellt när ett nytt spel startar och det nya rummets
+// state råkar vara tomt på samma rutor som det förra.
+function resetBoardDom() {
+  for (const { el } of cellEls) {
+    el.textContent = "";
+    el.classList.remove("x", "o", "pop");
+  }
+  for (const boardEl of boardEls) {
+    boardEl.classList.remove("active", "active-opponent", "won-x", "won-o", "won-d");
+    const overlay = boardEl.querySelector(".mini-board-overlay");
+    if (overlay) overlay.textContent = "";
+  }
+}
+
 function handleBoardClick(e) {
   const cellEl = e.target.closest(".cell");
   if (!cellEl || !currentRoomRef) return;
@@ -96,6 +112,7 @@ export function enterGame(roomCode, role, playerId, cb) {
   currentRoomRef = ref(db, `rooms/${roomCode}`);
   callbacks = cb;
   prevBoardsSnapshot = null;
+  resetBoardDom();
 
   update(ref(db, `rooms/${roomCode}/players/${role}`), { id: playerId, connected: true });
   const connRef = ref(db, `rooms/${roomCode}/players/${role}/connected`);
@@ -120,6 +137,16 @@ export function leaveGame() {
   latestRoom = null;
   prevBoardsSnapshot = null;
   callbacks = null;
+}
+
+// Startar om samma rum (samma spelare, samma kod) med ett helt tomt bräde.
+// Skickas till båda spelarna i realtid via onValue, precis som ett drag.
+export function restartGame() {
+  if (!currentRoomRef) return;
+  runTransaction(currentRoomRef, (room) => {
+    if (!room || room.status !== "finished") return room; // Avbryt om spelet inte är slut.
+    return resetRoomForRematch(room);
+  });
 }
 
 function render(room) {

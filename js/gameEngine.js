@@ -62,6 +62,22 @@ export function createInitialRoomState(hostPlayerId) {
   };
 }
 
+// Återställer ett rum till en ny match: samma spelare och rumskod,
+// men helt tomt bräde och X börjar om.
+export function resetRoomForRematch(room) {
+  return {
+    ...room,
+    status: "playing",
+    turn: "X",
+    activeBoard: -1,
+    boards: createEmptyBoards(),
+    boardWinners: createEmptyBoardWinners(),
+    winner: "",
+    moveCount: 0,
+    lastMove: null,
+  };
+}
+
 // Kontrollerar om ett drag är lagligt givet nuvarande rum-state.
 export function isMoveLegal(room, boardIndex, cellIndex, role) {
   if (!room || room.status !== "playing") return false;
