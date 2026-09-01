@@ -99,6 +99,27 @@ Detta gör att varje spelare får ett unikt, stabilt ID (utan inloggning) som
 används för att avgöra vem som är X respektive O, och för att kunna ladda om
 sidan utan att tappa sin plats i spelet.
 
+### Lägg till din domän under Authorized domains
+
+Firebase Auth litar bara på ett par domäner som standard (`localhost`,
+`ditt-projekt.firebaseapp.com`, `ditt-projekt.web.app`). Kör du appen från
+någon annan adress – t.ex. GitHub Pages – måste du lägga till den domänen
+manuellt, annars misslyckas inloggningen med felet
+`auth/unauthorized-domain`.
+
+1. Öppna **Authentication** i vänstermenyn (samma sida som i steg ovan).
+2. Klicka på fliken **Settings** längst upp på sidan (bredvid "Users",
+   "Sign-in method", "Templates", "Usage").
+3. Scrolla ner till rubriken **Authorized domains**.
+4. Klicka **Add domain** och skriv in domänen **utan** `https://` och
+   **utan** avslutande snedstreck, t.ex. `kkandenas.github.io`
+   (inte hela sökvägen `.../UltimateTikTacToe/`).
+
+Om du inte hittar sidan: gå direkt till
+`https://console.firebase.google.com/project/DITT-PROJEKT-ID/authentication/settings`
+(byt ut `DITT-PROJEKT-ID` mot ditt Firebase-projekts ID, som du hittar under
+**Project settings** ⚙️ → **General** → **Project ID**).
+
 ## Steg 6 – Kör appen
 
 ### Alternativ A: Kör lokalt
@@ -113,7 +134,7 @@ python3 -m http.server 8000
 
 Öppna sedan `http://localhost:8000` i två olika flikar/enheter för att testa.
 
-### Alternativ B: Firebase Hosting (rekommenderas för att spela mellan mobiler)
+### Alternativ B: Firebase Hosting
 
 ```bash
 npm install -g firebase-tools
@@ -124,6 +145,25 @@ firebase deploy
 
 Firebase ger dig en publik `https://ditt-projekt.web.app`-länk som fungerar
 perfekt att öppna direkt i mobilens webbläsare.
+
+### Alternativ C: GitHub Pages (auto-deploy vid varje push)
+
+Repot innehåller `.github/workflows/deploy-pages.yml` som bygger och
+publicerar sidan automatiskt varje gång du pushar till branchen
+`claude/ultimate-tictactoe-multiplayer-qgscce`. Aktivera det så här:
+
+1. Gå till repots **Settings → Pages**.
+2. Under **Build and deployment → Source**, välj **GitHub Actions**
+   (inte "Deploy from a branch").
+3. Pusha en commit – workflowen körs automatiskt under fliken **Actions**
+   och sidan publiceras på `https://<ditt-github-användarnamn>.github.io/<repo-namn>/`.
+
+> Om du senare byter till en annan branch (t.ex. `main`) som standard,
+> uppdatera `branches:`-listan i workflow-filen så den pekar på rätt branch.
+
+**Glöm inte:** lägg till GitHub Pages-domänen i Firebase Authorized domains
+(se steg 5 ovan) – annars misslyckas inloggningen med
+`auth/unauthorized-domain` när sidan körs från `github.io`.
 
 ## Hur spelet fungerar
 
