@@ -52,6 +52,11 @@ html, body {
   overflow-y: auto;
 }
 
+/* ---------- GAME SCREEN BACKGROUND ---------- */
+#game-screen {
+  background: var(--bg) url("../assets/game-bg.jpg") center / cover no-repeat;
+}
+
 .lobby-hero {
   position: relative;
   flex-shrink: 0;
@@ -230,7 +235,9 @@ html, body {
   align-items: center;
   justify-content: space-between;
   padding: max(10px, env(safe-area-inset-top)) 4vw 10px;
-  background: var(--bg-elevated);
+  background: rgba(20, 24, 34, 0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   flex-shrink: 0;
   gap: 8px;
 }
@@ -300,7 +307,9 @@ html, body {
   flex-shrink: 0;
   text-align: center;
   padding: 8px 4vw max(10px, env(safe-area-inset-bottom));
-  background: var(--bg-elevated);
+  background: rgba(20, 24, 34, 0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-top: 1px solid #1f2534;
 }
 .share-panel.hidden {
