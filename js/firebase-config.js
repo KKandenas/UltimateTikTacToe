@@ -13,6 +13,7 @@ import { getAuth } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-aut
 const firebaseConfig = {
   apiKey: "AIzaSyBudHKfeE6tXhQf5T2fNL0lSx5yzRWA2yc",
   authDomain: "ultimate-tictactoe-79662.firebaseapp.com",
+  databaseURL: "https://ultimate-tictactoe-79662-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "ultimate-tictactoe-79662",
   storageBucket: "ultimate-tictactoe-79662.firebasestorage.app",
   messagingSenderId: "214529197218",
