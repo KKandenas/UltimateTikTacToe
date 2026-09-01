@@ -11,13 +11,12 @@ import { getDatabase } from "https://www.gstatic.com/firebasejs/10.13.0/firebase
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "DIN_API_KEY",
-  authDomain: "DITT_PROJEKT.firebaseapp.com",
-  databaseURL: "https://DITT_PROJEKT-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "DITT_PROJEKT",
-  storageBucket: "DITT_PROJEKT.appspot.com",
-  messagingSenderId: "DITT_SENDER_ID",
-  appId: "DIN_APP_ID",
+  apiKey: "AIzaSyBudHKfeE6tXhQf5T2fNL0lSx5yzRWA2yc",
+  authDomain: "ultimate-tictactoe-79662.firebaseapp.com",
+  projectId: "ultimate-tictactoe-79662",
+  storageBucket: "ultimate-tictactoe-79662.firebasestorage.app",
+  messagingSenderId: "214529197218",
+  appId: "1:214529197218:web:9f5a8c8d154ddad4eac3fb"
 };
 
 export const app = initializeApp(firebaseConfig);
