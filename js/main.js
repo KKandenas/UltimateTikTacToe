@@ -14,6 +14,7 @@ import {
   clearSavedSession,
 } from "./lobby.js";
 import { enterGame, leaveGame, restartGame, buildBoardDom } from "./game.js";
+import { t, getLang, setLang, applyTranslations } from "./i18n.js";
 
 const el = {
   lobbyScreen: document.getElementById("lobby-screen"),
@@ -46,8 +47,30 @@ const el = {
   rulesLinkGame: document.getElementById("rules-link-game"),
   rulesCloseBtn: document.getElementById("rules-close-btn"),
 
+  langBtns: document.querySelectorAll(".lang-btn"),
+
   toast: document.getElementById("toast"),
 };
+
+// --- Språk --------------------------------------------------------------
+function updateLangButtons() {
+  el.langBtns.forEach((b) => b.classList.toggle("active", b.dataset.lang === getLang()));
+}
+el.langBtns.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    setLang(btn.dataset.lang);
+    updateLangButtons();
+  });
+});
+applyTranslations();
+updateLangButtons();
+
+// lobby.js kastar korta felnycklar (t.ex. "room_full") istället för
+// översatt text, så att den inte behöver veta något om språkval.
+function translateError(err) {
+  const key = "error_" + (err?.message || "generic");
+  return t(key) !== key ? t(key) : t("error_generic");
+}
 
 let toastTimeout = null;
 function showToast(message) {
@@ -98,7 +121,7 @@ el.createRoomBtn.addEventListener("click", async () => {
     const code = await createRoom(playerId);
     startGame(code, "X", playerId);
   } catch (err) {
-    showLobbyError(err.message || "Något gick fel. Försök igen.");
+    showLobbyError(translateError(err));
   } finally {
     setButtonsBusy(false);
   }
@@ -108,7 +131,7 @@ el.joinRoomBtn.addEventListener("click", async () => {
   showLobbyError("");
   const code = el.joinCodeInput.value.trim();
   if (!isValidRoomCode(code)) {
-    showLobbyError("Ange en giltig 4-siffrig rumskod.");
+    showLobbyError(t("error_invalid_code"));
     return;
   }
   setButtonsBusy(true);
@@ -117,7 +140,7 @@ el.joinRoomBtn.addEventListener("click", async () => {
     const role = await joinRoom(code, playerId);
     startGame(code, role, playerId);
   } catch (err) {
-    showLobbyError(err.message || "Något gick fel. Försök igen.");
+    showLobbyError(translateError(err));
   } finally {
     setButtonsBusy(false);
   }
@@ -156,7 +179,7 @@ el.copyLinkBtn.addEventListener("click", async () => {
   const url = `${location.origin}${location.pathname}?room=${el.shareCode.textContent}`;
   try {
     await navigator.clipboard.writeText(url);
-    showToast("Länk kopierad!");
+    showToast(t("toast_link_copied"));
   } catch (_) {
     showToast(url);
   }
@@ -168,7 +191,7 @@ function startGame(roomCode, role, playerId) {
   el.roleBadge.textContent = role;
   el.roleBadge.classList.toggle("x", role === "X");
   el.roleBadge.classList.toggle("o", role === "O");
-  el.roomCodeTag.textContent = `Rum: ${roomCode}`;
+  el.roomCodeTag.textContent = t("room_code_tag", { code: roomCode });
   el.shareCode.textContent = roomCode;
 
   enterGame(roomCode, role, playerId, {
@@ -180,19 +203,21 @@ function startGame(roomCode, role, playerId) {
       showToast(message);
     },
     onGameOver({ winner, youWon, isDraw }) {
-      el.gameoverTitle.textContent = isDraw ? "Oavgjort!" : `${winner} vinner!`;
+      el.gameoverTitle.textContent = isDraw
+        ? t("gameover_draw_title")
+        : t("gameover_winner", { symbol: winner });
       el.gameoverDesc.textContent = isDraw
-        ? "Bra kämpat – ingen vann den här gången."
+        ? t("gameover_draw_desc")
         : youWon
-        ? "Grattis, du vann! 🎉"
-        : "Du förlorade denna gång. Försök igen!";
+        ? t("gameover_win_desc")
+        : t("gameover_lose_desc");
       el.gameoverModal.classList.remove("hidden");
     },
     onGameContinues() {
       el.gameoverModal.classList.add("hidden");
     },
     onRoomMissing() {
-      showToast("Rummet finns inte längre.");
+      showToast(t("toast_room_missing"));
       returnToLobby();
     },
   });
@@ -201,7 +226,7 @@ function startGame(roomCode, role, playerId) {
 // --- Spelar-id via anonym Firebase-autentisering --------------------------
 let playerId = null;
 function requirePlayerId() {
-  if (!playerId) throw new Error("Ansluter fortfarande, försök igen om en sekund.");
+  if (!playerId) throw new Error("connecting");
   return playerId;
 }
 
@@ -235,11 +260,7 @@ function init() {
   });
 
   signInAnonymously(auth).catch((err) => {
-    showLobbyError(
-      "Kunde inte ansluta till Firebase. Kontrollera din firebase-config.js. (" +
-        err.message +
-        ")"
-    );
+    showLobbyError(t("error_firebase_config", { message: err.message }));
   });
 }
 

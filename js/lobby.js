@@ -32,7 +32,7 @@ export async function createRoom(playerId) {
     }
   }
   if (!code) {
-    throw new Error("Kunde inte hitta en ledig rumskod just nu. Försök igen.");
+    throw new Error("no_free_code");
   }
 
   const initialState = createInitialRoomState(playerId);
@@ -48,7 +48,7 @@ export async function joinRoom(code, playerId) {
   const roomRef = ref(db, `rooms/${code}`);
   const snap = await get(roomRef);
   if (!snap.exists()) {
-    throw new Error("Rummet finns inte. Kontrollera koden.");
+    throw new Error("room_not_found");
   }
   const room = snap.val();
 
@@ -61,7 +61,7 @@ export async function joinRoom(code, playerId) {
     return "O";
   }
   if (room.players?.O) {
-    throw new Error("Rummet är fullt.");
+    throw new Error("room_full");
   }
 
   const result = await runTransaction(roomRef, (current) => {
@@ -73,7 +73,7 @@ export async function joinRoom(code, playerId) {
   });
 
   if (!result.committed) {
-    throw new Error("Rummet blev fullt precis innan du hann ansluta.");
+    throw new Error("room_full_race");
   }
 
   saveSession(code, "O");

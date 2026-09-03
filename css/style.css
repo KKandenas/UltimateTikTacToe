@@ -91,6 +91,29 @@ html, body {
   font-size: clamp(13px, 3.6vw, 16px);
 }
 
+.lang-switch {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  margin: 4px 0 10px;
+}
+.lang-btn {
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid #262c3d;
+  background: var(--board-bg);
+  color: var(--text-dim);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+}
+.lang-btn.active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
 .mode-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -412,6 +435,12 @@ html, body {
 
 .cell.pop {
   animation: popIn 0.3s ease-out;
+}
+
+.cell.last-move {
+  box-shadow: inset 0 0 0 2px rgba(255, 209, 102, 0.9);
+  background: rgba(255, 209, 102, 0.12);
+  transition: box-shadow 0.2s, background 0.2s;
 }
 @keyframes popIn {
   0% { transform: scale(0); opacity: 0; }

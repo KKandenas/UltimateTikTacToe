@@ -10,6 +10,7 @@ import {
   off,
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
 import { isMoveLegal, applyMove, resetRoomForRematch } from "./gameEngine.js";
+import { t } from "./i18n.js";
 
 let currentRoomCode = null;
 let currentRole = null;
@@ -65,7 +66,7 @@ export function buildBoardDom(container) {
 function resetBoardDom() {
   for (const { el } of cellEls) {
     el.textContent = "";
-    el.classList.remove("x", "o", "pop");
+    el.classList.remove("x", "o", "pop", "last-move");
   }
   for (const boardEl of boardEls) {
     boardEl.classList.remove("active", "active-opponent", "won-x", "won-o", "won-d");
@@ -85,7 +86,7 @@ function handleBoardClick(e) {
 function attemptMove(boardIndex, cellIndex) {
   if (!isMoveLegal(latestRoom, boardIndex, cellIndex, currentRole)) {
     if (latestRoom && latestRoom.status === "playing" && latestRoom.turn !== currentRole) {
-      callbacks?.onIllegalMove?.("Inte din tur!");
+      callbacks?.onIllegalMove?.(t("toast_not_your_turn"));
     }
     return;
   }
@@ -192,6 +193,13 @@ function render(room) {
         el.classList.add("pop");
       }
     }
+
+    const isLastMove = !!(
+      room.lastMove &&
+      room.lastMove.board === boardIndex &&
+      room.lastMove.cell === cellIndex
+    );
+    el.classList.toggle("last-move", isLastMove);
   }
 
   prevBoardsSnapshot = room.boards.map((b) => b.slice());
@@ -213,16 +221,16 @@ function buildStatusInfo(room) {
 
   let text;
   if (room.status === "waiting") {
-    text = "Väntar på motståndare...";
+    text = t("status_waiting");
   } else if (room.status === "playing") {
-    text = room.turn === currentRole ? "Din tur" : "Motståndarens tur...";
+    text = room.turn === currentRole ? t("status_your_turn") : t("status_opponent_turn");
   } else {
     text =
       room.winner === "D"
-        ? "Oavgjort!"
+        ? t("status_draw")
         : room.winner === currentRole
-        ? "Du vann!"
-        : "Du förlorade";
+        ? t("status_you_won")
+        : t("status_you_lost");
   }
 
   return {

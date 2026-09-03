@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="sv">
+<html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
@@ -23,29 +23,34 @@
     </div>
 
     <div class="lobby-card">
-      <p class="app-subtitle">Spela mot en vän i realtid</p>
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button class="lang-btn" data-lang="en" type="button">EN</button>
+        <button class="lang-btn" data-lang="sv" type="button">SV</button>
+      </div>
+
+      <p class="app-subtitle" data-i18n="app_subtitle">Play against a friend in real time</p>
 
       <div class="mode-grid">
         <button class="tab-btn mode-cell mode-x active" data-tab="create">
           <span class="mode-icon">X</span>
-          <span class="mode-label">Skapa rum</span>
+          <span class="mode-label" data-i18n="mode_create_label">Create room</span>
         </button>
         <div class="mode-cell mode-empty" aria-hidden="true">
           <span class="mode-vs">vs</span>
         </div>
         <button class="tab-btn mode-cell mode-o" data-tab="join">
           <span class="mode-icon">O</span>
-          <span class="mode-label">Gå med</span>
+          <span class="mode-label" data-i18n="mode_join_label">Join</span>
         </button>
       </div>
 
       <div class="tab-panel" id="tab-create">
-        <p class="tab-desc">Skapa ett nytt rum och dela koden med din motståndare. Du blir X.</p>
-        <button id="create-room-btn" class="primary-btn">Skapa rum</button>
+        <p class="tab-desc" data-i18n="tab_create_desc">Create a new room and share the code with your opponent. You'll be X.</p>
+        <button id="create-room-btn" class="primary-btn" data-i18n="create_room_btn">Create room</button>
       </div>
 
       <div class="tab-panel hidden" id="tab-join">
-        <p class="tab-desc">Ange den 4-siffriga rumskoden. Du blir O.</p>
+        <p class="tab-desc" data-i18n="tab_join_desc">Enter the 4-digit room code. You'll be O.</p>
         <input
           id="join-code-input"
           class="code-input"
@@ -56,12 +61,12 @@
           placeholder="0000"
           autocomplete="off"
         />
-        <button id="join-room-btn" class="primary-btn">Gå med i rum</button>
+        <button id="join-room-btn" class="primary-btn" data-i18n="join_room_btn">Join room</button>
       </div>
 
       <p id="lobby-error" class="error-text hidden"></p>
 
-      <button id="rules-link-lobby" class="rules-link" type="button">Hur spelar man? Se spelreglerna</button>
+      <button id="rules-link-lobby" class="rules-link" type="button" data-i18n="rules_link">How to play? See the rules</button>
     </div>
   </section>
 
@@ -72,9 +77,9 @@
         <span class="role-badge" id="role-badge">X</span>
         <span class="room-code-tag" id="room-code-tag">Rum: ----</span>
       </div>
-      <div class="status-center" id="status-text">Väntar på motståndare...</div>
-      <button class="icon-btn" id="rules-link-game" title="Spelregler" aria-label="Spelregler">?</button>
-      <button class="icon-btn leave-btn" id="leave-btn" title="Lämna rum" aria-label="Lämna rum">✕</button>
+      <div class="status-center" id="status-text" data-i18n="status_waiting">Waiting for opponent...</div>
+      <button class="icon-btn" id="rules-link-game" data-i18n-title="rules_btn_title" title="Rules" aria-label="Rules">?</button>
+      <button class="icon-btn leave-btn" id="leave-btn" data-i18n-title="leave_btn_title" title="Leave room" aria-label="Leave room">✕</button>
     </header>
 
     <div class="board-wrap">
@@ -82,10 +87,10 @@
     </div>
 
     <div class="share-panel hidden" id="share-panel">
-      <p>Dela koden med din motståndare:</p>
+      <p data-i18n="share_panel_text">Share the code with your opponent:</p>
       <div class="share-row">
         <span class="share-code" id="share-code">0000</span>
-        <button id="copy-link-btn" class="secondary-btn">Kopiera länk</button>
+        <button id="copy-link-btn" class="secondary-btn" data-i18n="copy_link_btn">Copy link</button>
       </div>
     </div>
   </section>
@@ -93,52 +98,19 @@
   <!-- SPEL SLUT -->
   <div id="gameover-modal" class="modal hidden">
     <div class="modal-card">
-      <h2 id="gameover-title">Oavgjort!</h2>
+      <h2 id="gameover-title">Draw!</h2>
       <p id="gameover-desc"></p>
-      <button id="gameover-restart-btn" class="primary-btn">Spela igen</button>
-      <button id="gameover-leave-btn" class="secondary-btn modal-secondary">Tillbaka till lobbyn</button>
+      <button id="gameover-restart-btn" class="primary-btn" data-i18n="gameover_restart_btn">Play again</button>
+      <button id="gameover-leave-btn" class="secondary-btn modal-secondary" data-i18n="gameover_leave_btn">Back to lobby</button>
     </div>
   </div>
 
   <!-- SPELREGLER -->
   <div id="rules-modal" class="modal hidden">
     <div class="modal-card rules-card">
-      <h2>Spelregler</h2>
-      <div class="rules-content">
-        <p>
-          Ultimate Tic-Tac-Toe spelas på ett stort 3×3-rutnät där varje ruta
-          i sig är ett eget litet tre-i-rad-bräde – totalt 9 småbräden med
-          9 rutor vardera.
-        </p>
-        <ol>
-          <li>X gör första draget i valfritt litet bräde och valfri ruta.</li>
-          <li>
-            Vilken ruta du väljer <strong>inom</strong> det lilla brädet
-            avgör vilket av de 9 stora brädena motståndaren måste spela i
-            härnäst. Spelar du t.ex. i övre högra rutan skickas
-            motståndaren till det övre högra brädet.
-          </li>
-          <li>
-            Är det brädet redan vunnet eller fullt får spelaren istället
-            välja fritt bland alla öppna bräden – ett "frikort".
-          </li>
-          <li>
-            Får du tre egna symboler i rad (vågrätt, lodrätt eller
-            diagonalt) i ett litet bräde vinner du det brädet, och det
-            markeras med din stora symbol.
-          </li>
-          <li>
-            Blir ett litet bräde fullt utan vinnare räknas det som
-            oavgjort och räknas inte till någon spelare.
-          </li>
-          <li>
-            Först med tre vunna bräden i rad i det stora rutnätet vinner
-            hela spelet. Är alla bräden avgjorda utan att någon fått tre i
-            rad blir hela matchen oavgjort.
-          </li>
-        </ol>
-      </div>
-      <button id="rules-close-btn" class="primary-btn">Stäng</button>
+      <h2 data-i18n="rules_title">Rules</h2>
+      <div class="rules-content" data-i18n-html="rules_html"></div>
+      <button id="rules-close-btn" class="primary-btn" data-i18n="rules_close_btn">Close</button>
     </div>
   </div>
 
