@@ -15,6 +15,7 @@ import { t } from "./i18n.js";
 let currentRoomCode = null;
 let currentRole = null;
 let currentRoomRef = null;
+let currentOnDisconnect = null;
 let latestRoom = null;
 let prevBoardsSnapshot = null;
 let callbacks = null;
@@ -117,7 +118,8 @@ export function enterGame(roomCode, role, playerId, cb) {
 
   update(ref(db, `rooms/${roomCode}/players/${role}`), { id: playerId, connected: true });
   const connRef = ref(db, `rooms/${roomCode}/players/${role}/connected`);
-  onDisconnect(connRef).set(false);
+  currentOnDisconnect = onDisconnect(connRef);
+  currentOnDisconnect.set(false);
 
   onValue(currentRoomRef, (snap) => {
     const room = snap.val();
@@ -130,9 +132,27 @@ export function enterGame(roomCode, role, playerId, cb) {
   });
 }
 
+// Lämnar rummet. Om motståndaren redan är borta (aldrig gick med, eller
+// själv lämnat/kopplat från) raderas hela rummet ur databasen – annars
+// markeras bara jag som frånkopplad så att motståndaren kan spela vidare.
 export function leaveGame() {
-  if (currentRoomRef) off(currentRoomRef);
+  if (currentRoomRef) {
+    off(currentRoomRef);
+    if (currentOnDisconnect) currentOnDisconnect.cancel();
+
+    const role = currentRole;
+    runTransaction(currentRoomRef, (room) => {
+      if (!room) return room;
+      const opponent = room.players?.[otherRole(role)];
+      const opponentGone = !opponent || !opponent.connected;
+      if (opponentGone) return null; // Ingen kvar i rummet – ta bort det helt.
+      if (room.players?.[role]) room.players[role].connected = false;
+      return room;
+    });
+  }
+
   currentRoomRef = null;
+  currentOnDisconnect = null;
   currentRoomCode = null;
   currentRole = null;
   latestRoom = null;
